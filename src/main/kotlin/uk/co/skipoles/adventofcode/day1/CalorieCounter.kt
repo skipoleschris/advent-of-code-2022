@@ -2,21 +2,39 @@ package uk.co.skipoles.adventofcode.day1
 
 import java.io.File
 
+private data class MaxCaloriesTracker(
+    val numberOfElves: Int,
+    val caloriesCarried: List<Long> = emptyList()
+) {
+  fun totalCalories() = caloriesCarried.sum()
+}
+
+private fun MaxCaloriesTracker.track(newTotal: Long): MaxCaloriesTracker =
+    if (caloriesCarried.size < numberOfElves) copy(caloriesCarried = caloriesCarried + newTotal)
+    else {
+      val min = caloriesCarried.minOrNull()!!
+      if (newTotal > min) copy(caloriesCarried = caloriesCarried - min + newTotal) else this
+    }
+
 object CalorieCounter {
 
-  fun highestTotalCaloriesHeldByOneElf(inventory: Sequence<String>): Long {
-    val (max, last) =
-        inventory.fold(Pair(0L, emptyList<Long>())) { (max, currentElf), calories ->
-          if (calories.isEmpty()) Pair(maxOf(max, currentElf.sum()), emptyList())
-          else Pair(max, currentElf + calories.toLong())
+  fun highestTotalCaloriesHeldByTopElves(numberOfElves: Int, inventory: Sequence<String>): Long {
+    val (tracker, last) =
+        inventory.fold(Pair(MaxCaloriesTracker(numberOfElves), emptyList<Long>())) {
+            (tracker, currentElf),
+            calories ->
+          if (calories.isEmpty()) Pair(tracker.track(currentElf.sum()), emptyList())
+          else Pair(tracker, currentElf + calories.toLong())
         }
-    return maxOf(max, last.sum())
+    return tracker.track(last.sum()).totalCalories()
   }
 
-  fun highestTotalCaloriesHeldByOneElfFromInventory(filename: String): Long =
-      File(filename).useLines(block = ::highestTotalCaloriesHeldByOneElf)
+  fun highestTotalCaloriesHeldByTopElvesFromInventory(
+      filename: String,
+      numberOfElves: Int = 1
+  ): Long = File(filename).useLines { highestTotalCaloriesHeldByTopElves(numberOfElves, it) }
 }
 
 fun main() {
-  println(CalorieCounter.highestTotalCaloriesHeldByOneElfFromInventory("data/day1/input.txt"))
+  println(CalorieCounter.highestTotalCaloriesHeldByTopElvesFromInventory("data/day1/input.txt", 3))
 }
