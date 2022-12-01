@@ -11,7 +11,7 @@ I've developed these solutions in kotlin and will be using a TDD approach for ea
 This day was primarily a problem around processing sets of numbers from a file, summing them up
 and selecting maximum values.
 
-My initial approach started out by loading all the contents into memory (as a List<List<Long>>)
+My initial approach started out by loading all the contents into memory (as a List of Lists of Long)
 and then using map and sort functions to obtain the output. However after the first iteration I
 realised this was unnecessary as it was possible to track the required state on the fly as each
 line in the file is processed.
