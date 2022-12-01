@@ -23,4 +23,6 @@ elf's running total and the max values encountered. Advantages of this approach:
 * No need to hold the entire input list contents in memory
 * No need to do any summation or sorting of data
 
-
+Addition: also added a minimalist implementation that uses a single iteration with a chain of functions
+over a sequence of lines. Not quite as efficient as it builds a list of the total for each elf and then
+sorts it, but minimal in terms of the code needed.
