@@ -4,29 +4,38 @@ import java.io.File
 
 private data class MaxCaloriesTracker(
     val numberOfElves: Int,
-    val caloriesCarried: List<Long> = emptyList()
+    val topCaloriesCarried: List<Long> = emptyList(),
+    val currentElfCaloriesCarried: Long = 0L
 ) {
-  fun totalCalories() = caloriesCarried.sum()
+  fun totalCalories() = topCaloriesCarried.sum()
 }
 
-private fun MaxCaloriesTracker.track(newTotal: Long): MaxCaloriesTracker =
-    if (caloriesCarried.size < numberOfElves) copy(caloriesCarried = caloriesCarried + newTotal)
+private fun MaxCaloriesTracker.updateTopCalories(): MaxCaloriesTracker =
+    if (topCaloriesCarried.size < numberOfElves)
+        copy(
+            topCaloriesCarried = topCaloriesCarried + currentElfCaloriesCarried,
+            currentElfCaloriesCarried = 0L)
     else {
-      val min = caloriesCarried.minOrNull()!!
-      if (newTotal > min) copy(caloriesCarried = caloriesCarried - min + newTotal) else this
+      val min = topCaloriesCarried.minOrNull()!!
+      if (currentElfCaloriesCarried > min)
+          copy(
+              topCaloriesCarried = topCaloriesCarried - min + currentElfCaloriesCarried,
+              currentElfCaloriesCarried = 0L)
+      else copy(currentElfCaloriesCarried = 0L)
     }
+
+private fun MaxCaloriesTracker.addToCurrentElf(calories: Long): MaxCaloriesTracker =
+    copy(currentElfCaloriesCarried = currentElfCaloriesCarried + calories)
 
 object CalorieCounter {
 
   fun highestTotalCaloriesHeldByTopElves(numberOfElves: Int, inventory: Sequence<String>): Long {
-    val (tracker, last) =
-        inventory.fold(Pair(MaxCaloriesTracker(numberOfElves), emptyList<Long>())) {
-            (tracker, currentElf),
-            calories ->
-          if (calories.isEmpty()) Pair(tracker.track(currentElf.sum()), emptyList())
-          else Pair(tracker, currentElf + calories.toLong())
+    val tracker =
+        inventory.fold(MaxCaloriesTracker(numberOfElves)) { tracker, calories ->
+          if (calories.isEmpty()) tracker.updateTopCalories()
+          else tracker.addToCurrentElf(calories.toLong())
         }
-    return tracker.track(last.sum()).totalCalories()
+    return tracker.updateTopCalories().totalCalories()
   }
 
   fun highestTotalCaloriesHeldByTopElvesFromInventory(
