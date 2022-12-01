@@ -45,5 +45,6 @@ object CalorieCounter {
 }
 
 fun main() {
+  println(CalorieCounter.highestTotalCaloriesHeldByTopElvesFromInventory("data/day1/input.txt", 1))
   println(CalorieCounter.highestTotalCaloriesHeldByTopElvesFromInventory("data/day1/input.txt", 3))
 }
