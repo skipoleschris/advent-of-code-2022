@@ -2,31 +2,6 @@ package uk.co.skipoles.adventofcode.day1
 
 import java.io.File
 
-private data class MaxCaloriesTracker(
-    val numberOfElves: Int,
-    val topCaloriesCarried: List<Long> = emptyList(),
-    val currentElfCaloriesCarried: Long = 0L
-) {
-  fun totalCalories() = topCaloriesCarried.sum()
-}
-
-private fun MaxCaloriesTracker.updateTopCalories(): MaxCaloriesTracker =
-    if (topCaloriesCarried.size < numberOfElves)
-        copy(
-            topCaloriesCarried = topCaloriesCarried + currentElfCaloriesCarried,
-            currentElfCaloriesCarried = 0L)
-    else {
-      val min = topCaloriesCarried.minOrNull()!!
-      if (currentElfCaloriesCarried > min)
-          copy(
-              topCaloriesCarried = topCaloriesCarried - min + currentElfCaloriesCarried,
-              currentElfCaloriesCarried = 0L)
-      else copy(currentElfCaloriesCarried = 0L)
-    }
-
-private fun MaxCaloriesTracker.addToCurrentElf(calories: Long): MaxCaloriesTracker =
-    copy(currentElfCaloriesCarried = currentElfCaloriesCarried + calories)
-
 object CalorieCounter {
 
   fun highestTotalCaloriesHeldByTopElves(numberOfElves: Int, inventory: Sequence<String>): Long {
@@ -42,6 +17,31 @@ object CalorieCounter {
       filename: String,
       numberOfElves: Int = 1
   ): Long = File(filename).useLines { highestTotalCaloriesHeldByTopElves(numberOfElves, it) }
+
+  private data class MaxCaloriesTracker(
+      val numberOfElves: Int,
+      val topCaloriesCarried: List<Long> = emptyList(),
+      val currentElfCaloriesCarried: Long = 0L
+  ) {
+    fun totalCalories() = topCaloriesCarried.sum()
+  }
+
+  private fun MaxCaloriesTracker.updateTopCalories(): MaxCaloriesTracker =
+      if (topCaloriesCarried.size < numberOfElves)
+          copy(
+              topCaloriesCarried = topCaloriesCarried + currentElfCaloriesCarried,
+              currentElfCaloriesCarried = 0L)
+      else {
+        val min = topCaloriesCarried.minOrNull()!!
+        if (currentElfCaloriesCarried > min)
+            copy(
+                topCaloriesCarried = topCaloriesCarried - min + currentElfCaloriesCarried,
+                currentElfCaloriesCarried = 0L)
+        else copy(currentElfCaloriesCarried = 0L)
+      }
+
+  private fun MaxCaloriesTracker.addToCurrentElf(calories: Long): MaxCaloriesTracker =
+      copy(currentElfCaloriesCarried = currentElfCaloriesCarried + calories)
 }
 
 fun main() {
