@@ -105,4 +105,21 @@ object RockPaperScissors {
 fun main() {
   println("Part 1: ${RockPaperScissors.calculateScoreForStrategyGuide("data/day2/input.txt")}")
   println("Part 2: ${RockPaperScissors.calculateScoreForStrategyGuide2("data/day2/input.txt")}")
+
+  // Absolute minimalist version
+  val winMap = mapOf('A' to 2, 'B' to 3, 'C' to 1)
+  val loseMap = mapOf('A' to 3, 'B' to 1, 'C' to 2)
+  println(
+      File("data/day2/input.txt").useLines { lines ->
+        lines
+            .map {
+              when (it[2]) {
+                'X' -> loseMap[it[0]]!!
+                'Y' -> 3 + it[0].code - 64
+                'Z' -> 6 + winMap[it[0]]!!
+                else -> throw IllegalArgumentException("Invalid format")
+              }
+            }
+            .sum()
+      })
 }
