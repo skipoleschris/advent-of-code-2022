@@ -56,4 +56,16 @@ class RockPaperScissorsTest {
     val score = RockPaperScissors.calculateScoreForStrategyGuide2("data/day2/test.txt")
     score shouldBe 12
   }
+
+  @Test
+  fun `can pass the part 1 scenario`() {
+    val score = RockPaperScissors.calculateScoreForStrategyGuide("data/day2/input.txt")
+    score shouldBe 13675
+  }
+
+  @Test
+  fun `can pass the part 2 scenario`() {
+    val score = RockPaperScissors.calculateScoreForStrategyGuide2("data/day2/input.txt")
+    score shouldBe 14184
+  }
 }

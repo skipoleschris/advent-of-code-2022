@@ -48,4 +48,20 @@ class CalorieCounterTest {
 
     highestCalories shouldBe 23000L
   }
+
+  @Test
+  fun `can pass the part 1 scenario`() {
+    val totalCalories =
+        CalorieCounter.highestTotalCaloriesHeldByTopElvesFromInventory("data/day1/input.txt")
+
+    totalCalories shouldBe 69177L
+  }
+
+  @Test
+  fun `can pass the part 2 scenario`() {
+    val totalCalories =
+        CalorieCounter.highestTotalCaloriesHeldByTopElvesFromInventory("data/day1/input.txt", 3)
+
+    totalCalories shouldBe 207456L
+  }
 }
