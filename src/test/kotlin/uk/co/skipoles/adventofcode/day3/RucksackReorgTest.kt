@@ -32,7 +32,9 @@ class RucksackReorgTest {
 
   @Test
   fun `a string representation of rucksack contents should be convertable into compartments of items`() {
-    val (left, right) = RucksackReorg.parseInventory("vJrwpWtwJgWrhcsFMMfFFhFp")
+    val (left, right) =
+        RucksackReorg.splitInventoryIntoCompartments(
+            RucksackReorg.parseInventory("vJrwpWtwJgWrhcsFMMfFFhFp"))
     left.shouldContainExactly(
         Item.v,
         Item.J,
@@ -71,5 +73,29 @@ class RucksackReorgTest {
   fun `should produce a result for part 1`() {
     val total = RucksackReorg.sumIncorrectPriorityItemsFromInventory("data/day3/input.txt")
     total shouldBe 8153
+  }
+
+  @Test
+  fun `an item type common to three bags can be found and its priority identified`() {
+    val total =
+        RucksackReorg.commonItemTypePriority(
+            listOf(
+                RucksackReorg.parseInventory("vJrwpWtwJgWrhcsFMMfFFhFp"),
+                RucksackReorg.parseInventory("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"),
+                RucksackReorg.parseInventory("PmmdzqPrVvPwwTWBwg"),
+            ))
+    total shouldBe 18
+  }
+
+  @Test
+  fun `multiple groups of rucksacks can be processed from an inventory`() {
+    val total = RucksackReorg.sumBadgePrioritiesFromInventory("data/day3/test.txt")
+    total shouldBe 70
+  }
+
+  @Test
+  fun `should produce a result for part 2`() {
+    val total = RucksackReorg.sumBadgePrioritiesFromInventory("data/day3/input.txt")
+    total shouldBe 2342
   }
 }

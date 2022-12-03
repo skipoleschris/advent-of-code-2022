@@ -65,16 +65,34 @@ object RucksackReorg {
   private fun findInBoth(left: Set<Item>, right: Set<Item>): Set<Item> =
       left.filter { right.contains(it) }.toSet()
 
-  fun parseInventory(items: String): Pair<List<Item>, List<Item>> =
-      Pair(
-          items.take(items.length / 2).map { it.toItem() },
-          items.drop(items.length / 2).map { it.toItem() },
-      )
+  fun parseInventory(items: String): List<Item> = items.map { it.toItem() }
+
+  fun splitInventoryIntoCompartments(items: List<Item>): Pair<List<Item>, List<Item>> =
+      Pair(items.take(items.size / 2), items.drop(items.size / 2))
 
   private fun Char.toItem(): Item =
       Item.values().find { it.token == this }
           ?: throw IllegalArgumentException("Unknown token: $this")
 
   fun sumIncorrectPriorityItemsFromInventory(filename: String) =
-      File(filename).useLines { it.map(::parseInventory).map(::sumIncorrectPriorityItems).sum() }
+      File(filename).useLines {
+        it.map(::parseInventory)
+            .map(::splitInventoryIntoCompartments)
+            .map(::sumIncorrectPriorityItems)
+            .sum()
+      }
+
+  fun commonItemTypePriority(rucksacks: List<List<Item>>): Int =
+      findItemCommonToAll(rucksacks).priority
+
+  private fun findItemCommonToAll(rucksacks: List<List<Item>>): Item {
+    val first = rucksacks.first()
+    val rest = rucksacks.drop(1)
+    return first.first { item -> rest.all { it.contains(item) } }
+  }
+
+  fun sumBadgePrioritiesFromInventory(filename: String) =
+      File(filename).useLines {
+        it.map(::parseInventory).chunked(3).map(::commonItemTypePriority).sum()
+      }
 }
